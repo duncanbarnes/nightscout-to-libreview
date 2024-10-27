@@ -12,7 +12,7 @@ const getNightscoutToken = function (token) {
 
 const getNightscoutFoodEntries = async function (baseUrl, token, fromDate, toDate) {
   const url1 = `${baseUrl}/api/v1/treatments.json?find[created_at][$gte]=${fromDate}&find[created_at][$lte]=${toDate}&find[eventType]=Meal%20Bolus&count=131072${getNightscoutToken(token)}`;
-  console.log('entries url', url1.gray);
+  console.log('Food Entries URL 1 (Meal Bolus Food)', url1.gray);
 
   const response1 = await axios.get(url1, {
     headers: {
@@ -31,7 +31,7 @@ const getNightscoutFoodEntries = async function (baseUrl, token, fromDate, toDat
   });
 
   const url2 = `${baseUrl}/api/v1/treatments.json?find[created_at][$gte]=${fromDate}&find[created_at][$lte]=${toDate}&find[eventType]=Carb%20Correction&count=131072${getNightscoutToken(token)}`;
-  console.log('entries url', url2.gray);
+  console.log('Food Entries URL 2 (Carb Corrections)', url2.gray);
 
   const response2 = await axios.get(url2, {
     headers: {
@@ -64,7 +64,7 @@ const getNightscoutFoodEntries = async function (baseUrl, token, fromDate, toDat
 
 const getNightscoutGlucoseEntries = async function (baseUrl, token, fromDate, toDate) {
   const url = `${baseUrl}/api/v1/entries.json?find[dateString][$gte]=${fromDate}&find[dateString][$lte]=${toDate}&count=131072${getNightscoutToken(token)}`;
-  console.log('glucose entries url', url.gray);
+  console.log('Glucose entries URL', url.gray);
 
   const response = await axios.get(url, {
     headers: {
@@ -101,7 +101,7 @@ const getNightscoutGlucoseEntries = async function (baseUrl, token, fromDate, to
 
 const getNightscoutInsulinEntries = async function (baseUrl, token, fromDate, toDate) {
   const url1 = `${baseUrl}/api/v1/treatments.json?find[created_at][$gte]=${fromDate}&find[created_at][$lte]=${toDate}&find[eventType]=Correction%20Bolus&count=131072${getNightscoutToken(token)}`;
-  console.log('insulin entries url', url1.gray);
+  console.log('Insulin entries URL 1 (Correction Bolus)', url1.gray);
 
   const response1 = await axios.get(url1, {
     headers: {
@@ -119,7 +119,7 @@ const getNightscoutInsulinEntries = async function (baseUrl, token, fromDate, to
   });
 
   const url2 = `${baseUrl}/api/v1/treatments.json?find[created_at][$gte]=${fromDate}&find[created_at][$lte]=${toDate}&find[eventType]=Bolus&count=131072${getNightscoutToken(token)}`;
-  console.log('insulin entries url', url2.gray);
+  console.log('Insulin entries URL 2 (Bolus)', url2.gray);
 
   const response2 = await axios.get(url2, {
     headers: {
@@ -136,7 +136,25 @@ const getNightscoutInsulinEntries = async function (baseUrl, token, fromDate, to
     };
   });
 
-  return [...data1, ...data2].map(e => {
+  const url3 = `${baseUrl}/api/v1/treatments.json?find[created_at][$gte]=${fromDate}&find[created_at][$lte]=${toDate}&find[eventType]=Meal%20Bolus&count=131072${getNightscoutToken(token)}`;
+  console.log('Insulin entries URL 3 (Meal Bolus)', url3.gray);
+
+  const response3 = await axios.get(url3, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const data3 = response3.data.map(d => {
+    return {
+      id: parseInt(`4${dayjs(d['created_at']).format('YYYYMMDDHHmmss')}`),
+      timestamp: d['created_at'],
+      insulin: d.insulin,
+      duration: d.duration
+    };
+  });
+
+  return [...data1, ...data2, ...data3].map(e => {
     return {
       extendedProperties: {
         factoryTimestamp: e.timestamp
