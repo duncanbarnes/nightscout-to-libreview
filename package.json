@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ."
   },
-  "author": "Reimar Metzen",
+  "author": "Reimar Metzen/Duncan Barnes",
   "dependencies": {
     "array-smooth": "^1.0.0",
     "axios": "^0.21.1",
@@ -14,6 +14,7 @@
     "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
     "prompt": "^1.1.0",
+    "readline": "^1.3.0",
     "uuid": "^8.3.2"
   }
 }
